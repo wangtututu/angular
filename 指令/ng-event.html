@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="../libs/angular.min.1.5.js"></script>
+	</head>
+	<body>
+			
+		<div ng-app="myApp">
+			<div ng-controller="myCon">
+				<button ng-click="click()">单击</button>
+				<button ng-dblclick="dblclick()">双击</button>
+			</div>
+		</div>
+		
+		<script>
+			//一个页面只允许有一个 app
+			var app = angular.module('myApp', []);	//创建一个 module 对象
+			//绑定一个控制器
+			// 注入服务
+			// $scope 是一个服务 表示当前控制器
+			app.controller('myCon', ['$scope',function($scope) {
+				$scope.click = function(){
+					alert("单击")
+				}
+				$scope.dblclick = function(){
+					alert("双击")
+				}
+			}]);
+		</script>
+
+	</body>
+</html>

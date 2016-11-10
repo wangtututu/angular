@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="../libs/angular.min.1.5.js"></script>
+	</head>
+	<body>
+			
+		<div ng-app="myApp">
+			<div ng-controller="myCon">
+				<input type="text" value="选中后剪切" ng-cut="cutstate = 'true'" />
+				<div ng-if="cutstate"> 是否使用剪切组合件 {{ cutstate }}</div>
+			</div>
+		</div>
+		
+		<script>
+			//一个页面只允许有一个 app
+			var app = angular.module('myApp', []);	//创建一个 module 对象
+			//绑定一个控制器
+			// 注入服务
+			// $scope 是一个服务 表示当前控制器
+			app.controller('myCon', ['$scope',function($scope) {
+				
+			}]);
+		</script>
+
+	</body>
+</html>

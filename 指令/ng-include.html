@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="../libs/angular.min.1.5.js"></script>
+	</head>
+	<body>
+		<div ng-app="myApp" ng-controller="myAppCon" ng-init="header='./header.html'">
+			<!-- 使用自定义指令 -->
+			<div ng-include="header"></div>
+		</div>
+		<script>
+			var app = angular.module('myApp', []);
+			app.controller('myAppCon', ['$scope',function($scope) {
+				$scope.inc_url = './header.html';
+			}]);
+		</script>
+		
+	</body>
+</html>

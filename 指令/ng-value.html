@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="../libs/angular.min.1.5.js"></script>
+	</head>
+	<body>
+			
+		<div ng-app="myApp">
+			<div ng-controller="myCon">
+				<h2>请选择</h2>
+				<p>
+					ng-value 把多个单选框关联到一起   只有选中的值才会赋值到   ng-model 上
+				</p>
+				<label ng-repeat="name in names">
+			       {{ name }}
+			       <input type="radio" ng-model="my.favorite" ng-value="name" name="favorite">
+			    </label>
+			    <div>你的选择是 ： {{ my.favorite }}</div>
+			    
+			   <!-- angular 如何处理闪烁   >>>  使用 ng-cloak -->
+			</div>
+		</div>
+		
+		<script>
+			//一个页面只允许有一个 app
+			var app = angular.module('myApp', []);	//创建一个 module 对象
+			//绑定一个控制器
+			// 注入服务
+			// $scope 是一个服务 表示当前控制器
+			app.controller('myCon', ['$scope',function($scope) {
+				$scope.names = ['A', 'B', 'C'];
+       			$scope.my = { favorite: 'A' };
+			}]);
+		</script>
+
+	</body>
+</html>

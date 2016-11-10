@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="../libs/angular.min.1.5.js"></script>
+	</head>
+	<body>
+		
+		<div ng-app="myApp" ng-controller="ExampleController">
+		  <div ng-repeat="(key,item) in ckmodel">
+		    <label>
+		      {{ key }}:
+		      <input type="checkbox" name="ckmodel"  ng-model="ckmodel[key]">
+		    </label>
+		  </div>
+		  <p>
+		    value1 =  <span ng-bind="ckmodel | json "></span>
+		  </p>
+		  <br/>
+		  <pre>{{ checkbox_data | json }}</pre>
+		</div>
+		<script>
+		  angular.module('myApp', [])
+		    .controller('ExampleController', ['$scope', function($scope) {
+		      	$scope.ckmodel = {
+		          value1 : true,
+		          value2 : true
+		      	};
+		      	$scope.checkbox_data = {};
+		      	$scope.$watch('ckmodel',function(newValue,oldValue, scope){
+		        	$scope.checkbox_data = newValue;
+		      	},true);
+		    }]);
+		</script>
+	</body>
+</html>

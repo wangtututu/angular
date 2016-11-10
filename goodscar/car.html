@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>购物车效果</title>
+		<link rel="stylesheet" href="main.css" />
+		<script src="../libs/angular.min.1.5.js"></script>
+	</head>
+	<body>
+		<div ng-app="MyApp">
+			<div ng-controller="shop-list">
+				<!--商品分类-->
+				<div class="class-list clearfix">
+					<label class="item" ng-repeat="(key,item) in data">
+				       {{ item.name }}
+				       <input type="radio" ng-model="curItemKey.id" ng-value="key" name="favorite">
+				    </label>
+				</div>	
+				<!--<hr />
+				<p>{{ curItemKey | json}}</p>-->
+				<hr/>
+				<ul>
+					<li ng-repeat="(id,item) in showDate.childs">
+						<p>{{ item.name }}</p>
+						<p>{{ item.price }}</p>
+						<button ng-click="joinCar(id,item)">购买</button>
+						<p>--------------</p>
+					</li>
+				</ul>
+				
+				<hr/>
+				
+				<h1>购物车详细信息</h1>
+				
+				<ul class="select-shop">
+					<li>
+						<label>
+							全选
+							<input type="checkbox" value="" ng-model="selectAll" ng-click="selectAllClick($event)"/>
+						</label>
+						<p>商品名称</p>
+						<p>商品价格</p>
+						<p>购买数量</p>
+					</li>
+					<li ng-repeat="(key,item) in carGoods">
+						<label>
+							<input type="checkbox" name="selectState" ng-model="item.selectState"/>
+							<!--<input type="checkbox" name="buyGoods" ng-model="buyGoods[key]"/>-->
+						</label>
+						<p>{{ item.name }}</p>
+						<p>{{ item.price }}</p>
+						<p>{{ item.count }}</p>
+					</li>
+					<li>
+						<p>
+							<span>总数量: {{ carGoods | sumNum }}</span>
+							<span>总价格: {{ carGoods | sumPrice }}</span>
+						</p>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		<script>
+			var app = angular.module("MyApp",[]);
+			app.filter('sumNum',function(){
+				return function(obj){
+					var count = 0;
+					for(var key in obj){
+						var item = obj[key];
+						//判断选中商品
+						if(item.selectState){
+							count += item.count;
+						}
+					}
+					return count;
+				}
+			})
+			app.filter('sumPrice',function(){
+				return function(obj){
+					var price = 0;
+					for(var key in obj){
+						var item = obj[key];
+						if(item.selectState){
+							price += item.count * item.price;
+						}
+					}
+					return price;
+				}
+			})
+			app.controller("shop-list",[
+				"$scope","$http",
+				function($scope,$http){
+					
+					$scope.curItemKey = {};	//商品总数据
+					
+					$scope.data = {};  		//商品数据
+					
+					$scope.showDate = {};	//存放显示的列表数据 
+					
+					$scope.carGoods = {};	//存放加入购物车数据
+					
+//					$scope.buyGoods = {};	//存放要购买数据
+//					
+//					$scope.buyDate = {};	//存放选中的数据
+	
+					// 发起请求，获取 json 数据
+					$http.get("./data.json")
+						.then(function(response){
+							$scope.data = response.data;
+							$scope.curItemKey = {
+								"id" : Object.keys($scope.data)[0]
+							}
+						});
+						
+					//监听当前控制器下的数据的变化
+					$scope.$watch('curItemKey',function(newValue,oldValue){
+						$scope.showDate = $scope.data[newValue.id];
+					},true);
+					
+					// 点击分类的 click 事件
+					$scope.joinCar = function(id,item){
+						//console.log(id,item)
+						var shopInfo =Object.assign({},item);
+						shopInfo.count = 1;
+						if(id in $scope.carGoods){
+							$scope.carGoods[id].count += shopInfo.count;
+						}else{
+							$scope.carGoods[id] = shopInfo;
+						}
+						//console.log($scope.carGoods)
+					};
+					
+					// 全选状态
+					$scope.selectAllClick = function(e){
+						for(var key in $scope.carGoods){
+							$scope.carGoods[key].selectState = $scope.selectAll;
+						}
+					}
+					
+					//监听全选状态
+					$scope.$watch('carGoods',function(newData){
+						var status = true; //假设所有的商品都是选中状态
+						var count = 0;
+						for(var key in $scope.carGoods){
+							count++;
+							//如果其中一个商品为 false
+							if(!$scope.carGoods[key].selectState){
+								status = false;
+								break;
+							}
+						}
+						if(count == 0){
+							status = false;
+						}
+						//设置全选状态为 false
+						$scope.selectAll = status;
+					},true);
+//			      	$scope.$watch('buyGoods',function(newValue,oldValue){
+//			        	//$scope.checkbox_data = newValue;
+//			        	
+//			        	for(var key in $scope.buyGoods){
+//			        		//console.log($scope.buyGoods)
+//			        		var shopInfo =Object.assign({},$scope.carGoods[key]);
+//			        		console.log($scope.buyGoods[key])
+//			        		if($scope.buyGoods[key]){
+//			        			
+//			        			$scope.buyDate[key] = shopInfo
+//			        		}else{
+//			        			$scope.buyDate[key].count = 0;
+//			        		}
+//			        		
+//			        	}
+//			        		
+//			        	console.log($scope.carGoods)
+//			        	
+//			      	},true);
+					
+			}])
+		</script>
+	</body>
+</html>
